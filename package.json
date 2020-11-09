@@ -1,9 +1,11 @@
 {
-  "name": "discordbot",
+  "name": "exframe",
   "version": "1.0.0",
-  "description": "",
+  "description": "ExFrame is cool",
   "main": "index.js",
   "dependencies": {
+    "simple-youtube-api": "^5.2.1",
+    "ytdl-core": "^4.0.3",
     "discord-ytdl-core": "^4.1.3",
     "discord.js": "^12.4.1",
     "merge-options": "^3.0.3",
@@ -18,8 +20,17 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo "Error: no test specified" && exit 1",
+    "start": "node index.js"
   },
-  "author": "",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marquito523/ExFrameBot.git"
+  },
+  "author": "marquito523",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marquito523/ExFrameBot/issues"
+  },
+  "homepage": "https://github.com/marquito523/ExFrameBot#readme"
 }
