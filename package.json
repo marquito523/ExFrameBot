@@ -4,8 +4,6 @@
   "description": "ExFrame is cool",
   "main": "index.js",
   "dependencies": {
-    "simple-youtube-api": "^5.2.1",
-    "ytdl-core": "^4.0.3",
     "discord-ytdl-core": "^4.1.3",
     "discord.js": "^12.4.1",
     "merge-options": "^3.0.3",
@@ -20,7 +18,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo "Error: no test specified" && exit 1",
+    "test": "echo Error: no test specified && exit 1",
     "start": "node index.js"
   },
   "repository": {
