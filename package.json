@@ -1,6 +1,11 @@
+
+
 {
   "name": "exframe",
   "version": "1.0.0",
+  "engines": {
+    "npm": "6.14.8"
+  }
   "description": "ExFrame is cool",
   "main": "index.js",
   "dependencies": {
