@@ -1,7 +1,11 @@
 {
   "name": "music-bot",
   "main": "index.js",
-  "author": "ZerioDev",
+  "scripts": {
+    "start": "npm start",
+    "test": "echo Error: no test specified && exit 1"
+  },
+  "author": "marquito523",
   "version": "4.0.1",
   "repository": "https://github.com/ZerioDev/Music-bot.git",
   "description": "A complete code to download for a music bot. Using a module (discord-player).",
@@ -30,3 +34,6 @@
     "ytdl-core": "^4.4.3"
   }
 }
+
+
+
