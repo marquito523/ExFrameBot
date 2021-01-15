@@ -1,0 +1,13 @@
+{
+    "emojis": {
+        "off": ":x:",
+        "error": ":warning:",
+        "queue": ":bar_chart:",
+        "music": ":musical_note:",
+        "success": ":white_check_mark:"
+    },
+    
+        "token": "NzMzNjY1MzYwMTg4MDE0NjQ0.XxGdHA.a89mEcrbq0fo80MI1b1ASeslwbI",
+        "defaultprefix": "m!"
+    
+}
