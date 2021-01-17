@@ -232,7 +232,7 @@ client.on('message', async message => {
         if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
         var embed = new Discord.MessageEmbed()
             .setTitle('** ExFrame Help Information**')
-            .setURL("https://marcoaskovic.wixsite.com/exframe")
+            .setURL("https://marquito523.github.io/ExFrame-Website/")
             .setTimestamp()
             .setThumbnail('https://cdn.discordapp.com/attachments/719203211134894151/791214643813023784/ws_Red_Hexagons_1280x1024.jpg')
             .addFields({
