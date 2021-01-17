@@ -201,7 +201,7 @@ client.on('message', async message => {
 
             } catch (e) {
 
-                return message.channel.send(":x: Unexpected error happened when running the command!")
+                return message.channel.send( ":x: Unexpected error happened when running the command!")
 
             }
         }
