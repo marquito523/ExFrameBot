@@ -1,6 +1,10 @@
-const db = require('quick.db')
+const mongodb = require("mongoose")
+  
+const Guild = require("../commands/Models/Guild")
 
-module.exports = (client, message) => {
+const { defaultprefix } = require("../config.json")
+
+module.exports = async (client, message) => {
 
     if(message.channel.type === 'dm')return
 
@@ -10,9 +14,42 @@ module.exports = (client, message) => {
 
     if(message.author.id === client.user.id) return;
 
-    const prefix = db.get(`guild_${message.guild.id}_prefix`) || 'm!';
-
     if (message.author.bot || message.channel.type === 'dm') return;
+    
+
+   let prefix
+
+    let Pguild
+
+
+    const settings = await Guild.findOne({
+
+        guildID: message.guild.id
+
+    }, (err, guild) => {
+
+        Pguild = guild
+
+        if (err) console.error(err)
+
+    })
+
+   if (!Pguild)
+   {
+    prefix = defaultprefix
+
+    }else if(!settings.prefix){
+
+        prefix = defaultprefix
+
+  }else{
+
+        prefix = settings.prefix
+
+   }
+
+   client.prefix = prefix
+
 
     if (message.content.indexOf(prefix) !== 0) return;
 
