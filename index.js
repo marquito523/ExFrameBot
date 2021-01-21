@@ -1,11 +1,22 @@
 const fs = require('fs');
 
-const db = require('quick.db')
-
 const discord = require('discord.js');
 
 const Discord = require('discord.js');
 
+const { DB_PASSWORD, DB_NAME } = require("./config.json")
+
+
+
+const dbOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: true
+}
+
+const mongodb = require("mongoose")
+
+const Guild = require("./commands/Models/Guild")
 
 const {
     defaultprefix
@@ -16,7 +27,7 @@ const {
 } = require("./config.json")
 
 const client = new discord.Client(
-    {disableEveryone: false});
+    { disableEveryone: false });
 
 
 const {
@@ -56,6 +67,7 @@ for (const file of player) {
 };
 
 client.on('ready', () => {
+    mongodb.connect(`mongodb+srv://marquito523:${DB_PASSWORD}@cluster0.qmekk.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`, dbOptions).then(console.log('Database is connected!'))
     console.log(`${client.user.username}'s status up, and running!`);
     setInterval(() => {
         const statuses = [`${defaultprefix}help||${client.guilds.cache.size} guilds, not bad`, `${defaultprefix}help to start!`, `${defaultprefix}help|| ${client.users.cache.size} users O.o`, `${defaultprefix}help|| Hey guys, have a great day!`];
@@ -81,40 +93,108 @@ client.on('guildCreate', guild => {
 
 client.on('guildMemberAdd', async member => {
 
-    const JoinNotif = db.get(`guild_${member.guild.id}_JoinNotif`) || false;
+    let Pguild
 
-    const defaultRole = db.get(`guild_${member.guild.id}_defaultRole`) || false
+    let JoinNotif
 
-    const Channel = db.get(`guild_${member.guild.id}_ChannelNotif`);
+    let defaultRole
 
-    const SendText = db.get(`guild_${member.guild.id}_JoinDM`) || `Welcome ${member} we hope you enjoy your stay here! Please follow the rules of the server!`
+    let Channel
+
+    let SendText
+
+
+    const settings = await Guild.findOne({
+
+        guildID: member.guild.id
+
+    }, (err, guild) => {
+
+        Pguild = guild
+
+        if (err) console.error(err)
+
+    })
+
+    if (!Pguild) {
+
+
+        SendText = `Welcome! we hope you enjoy your stay here! Please follow the rules of the server!`
+
+        JoinNotif = false
+
+        defaultRole = "false"
+
+    } else {
+
+        if (!settings.SendText) {
+
+
+            SendText = `Welcome! we hope you enjoy your stay here! Please follow the rules of the server!`
+
+        } else {
+
+            SendText = settings.SendText
+
+        }
+
+        if (!settings.JoinNotif) {
+
+            JoinNotif = false
+
+        } else {
+
+            JoinNotif = settings.JoinNotif
+
+        }
+
+        if (!settings.defaultRole) {
+
+            defaultRole = "false"
+
+        } else {
+
+            defaultRole = settings.defaultRole
+
+
+        }
+
+        if (!settings.JoinNotifChannel) {
+
+        } else {
+
+            Channel = settings.JoinNotifChannel
+
+        }
+
+    }
 
     if (!JoinNotif === false) {
-       // member.guild.systemChannel.send((new Discord.MessageEmbed().setDescription(`**${member}** just joined ${member.guild.name}, ***welcome!***`)))
-       if(Channel){
-        const sendchannel = client.channels.cache.get(Channel)
+        // member.guild.systemChannel.send((new Discord.MessageEmbed().setDescription(`**${member}** just joined ${member.guild.name}, ***welcome!***`)))
+        if (Channel) {
+            const sendchannel = client.channels.cache.get(Channel)
 
-        if(sendchannel){
+            if (sendchannel) {
 
-        
-        let user = member.user
 
-        let avatar = user.displayAvatarURL({size: 1024})
+                let user = member.user
 
-        let memberName = member.user.username
+                let avatar = user.displayAvatarURL({ size: 1024 })
 
-        try{
+                let memberName = member.user.username
 
-        sendchannel.send(new Discord.MessageEmbed().setAuthor(`${memberName} has just joined the server!`, avatar).setTitle("**New user joined!**").setDescription(`Welcome ${member} to ${member.guild.name}!`).setThumbnail(member.guild.iconURL()).setTimestamp())
+                try {
 
-        }catch(e){
+                    sendchannel.send(new Discord.MessageEmbed().setAuthor(`${memberName} has just joined the server!`, avatar).setTitle("**New user joined!**").setDescription(`Welcome ${member} to ${member.guild.name}!`).setThumbnail(member.guild.iconURL()).setTimestamp())
 
+                } catch (e) {
+
+                }
+
+            }
+
+        } else {
         }
-
-        }
-
-       }else{
-       }
     }
 
 
@@ -130,27 +210,32 @@ client.on('guildMemberAdd', async member => {
 
     }
 
-    if (!defaultRole === false) {
-    
+
+    if (defaultRole === "false") {
+
+
+    } else {
+
         const Role = member.guild.roles.cache.get(defaultRole)
 
-        if (Role){          
+        if (Role) {
 
-             if(!member.roles.cache.has(Role.id)) {
+            if (!member.roles.cache.has(Role.id)) {
 
-            await member.roles.add(Role.id).catch((e) =>  member.guild.systemChannel.send("An error happened! I do not have permission to add " + Role.name + " to any members!")); 
-          
 
-          
+                await member.roles.add(Role.id).catch((e) => member.guild.systemChannel.send("An error happened! I do not have permission to add " + Role.name + " to any members!"));
 
             }
         }
     }
+
 });
 
 
 
 client.on('message', async message => {
+
+
 
     if (message.author.id === client.user.id) return;
 
@@ -158,7 +243,85 @@ client.on('message', async message => {
 
     if (message.channel.type === 'dm') return message.reply(new Discord.MessageEmbed().setDescription("I'm sorry, but I do not handle DMs. Please message me through a guild! ;D"))
 
-    const prefix = db.get(`guild_${message.guild.id}_prefix`) || 'm!';
+    //DATA_START
+
+    let prefix
+
+    let Pguild
+
+    let SuggestionChannelGuild
+
+    let JoinNotif
+
+    let Filter
+
+
+    const settings = await Guild.findOne({
+
+        guildID: message.guild.id
+
+    }, (err, guild) => {
+
+        Pguild = guild
+
+        if (err) console.error(err)
+
+    })
+
+    if (!Pguild) {
+
+        prefix = defaultprefix
+
+        SuggestionChannelGuild = "None"
+
+        JoinNotif = false
+
+        Filter = false
+
+    } else {
+
+        if (!settings.prefix) {
+
+            prefix = defaultprefix
+
+        } else {
+
+            prefix = settings.prefix
+        }
+
+        if (!settings.Filter) {
+
+            Filter = false
+
+        } else {
+
+            Filter = settings.Filter
+
+        }
+        if (!settings.SuggestionChannel) {
+
+            SuggestionChannelGuild = "None"
+
+        } else {
+
+            SuggestionChannelGuild = settings.SuggestionChannel
+
+
+        }
+
+        if (!settings.JoinNotif) {
+
+            JoinNotif = false
+
+        } else {
+
+            JoinNotif = settings.JoinNotif
+
+        }
+    }
+
+    //DATA_END
+
 
     const ReportPrefix = `${prefix}report`
 
@@ -168,16 +331,16 @@ client.on('message', async message => {
 
     const args = message.content.substring(prefix.length).split(" ")
 
-    const Filter = db.get(`guild_${message.guild.id}_Filter`) || false;
+    //  const Filter = db.get(`guild_${message.guild.id}_Filter`) || false;
 
-    const JoinNotif = db.get(`guild_${message.guild.id}_JoinNotif`) || false;
+    //const JoinNotif = db.get(`guild_${message.guild.id}_JoinNotif`) || false;
 
-    const SuggestionChannelGuild = db.get(`guild_${message.guild.id}_SuggestionChannel`) || "None"
-
-
+    //let SuggestionChannelGuild = db.get(`guild_${message.guild.id}_SuggestionChannel`) || "None"
 
 
-    if (message.content === `<@!${client.user.id}>`) { 
+
+
+    if (message.content === `<@!${client.user.id}>`) {
 
         if (!message.guild.me.hasPermission("EMBED_LINKS")) {
 
@@ -201,7 +364,7 @@ client.on('message', async message => {
 
             } catch (e) {
 
-                return message.channel.send( ":x: Unexpected error happened when running the command!")
+                return message.channel.send(":x: Unexpected error happened when running the command!")
 
             }
         }
@@ -319,45 +482,45 @@ client.on('message', async message => {
 
         if (!args[1]) return message.channel.send((new Discord.MessageEmbed().setDescription(`The suggestion needs to contain a **suggestion** ;D`).setTitle("**An empty suggestion lol**")))
 
-        if(SuggestionChannelGuild === "None"){
+        if (SuggestionChannelGuild === "None") {
 
-                if (!message.guild.channels.cache.find(channel => channel.name === 'suggestions')) return message.channel.send((new Discord.MessageEmbed().setDescription(` :x: **No suggestion channel preset**, and no channels name "suggestions" within this guild! To preset suggestion, run ${prefix}setup-suggestion`)))
-        
-        
-                const suggestionchannel = message.guild.channels.cache.find(channel => channel.name === 'suggestions')
-        
-        
-                var suggestionguild = message.content.substring(`${prefix}suggest`.length)
-        
-        
-                message.channel.send((new Discord.MessageEmbed().setTitle("**Your suggestion has been sent, thank you for suggesting!**")))
+            if (!message.guild.channels.cache.find(channel => channel.name === 'suggestions')) return message.channel.send((new Discord.MessageEmbed().setDescription(` :x: **No suggestion channel preset**, and no channels name "suggestions" within this guild! To preset suggestion, run ${prefix}setup-suggestion`)))
 
-            }else{
 
-                const SendChannel = message.guild.channels.cache.get(SuggestionChannelGuild.id)
-
-                if(!SendChannel)return message.channel.send(new Discord.MessageEmbed().setDescription(" :x: Channel no longer exists Error 404!"))
-
-            const suggestionchannel = SendChannel
+            const suggestionchannel = message.guild.channels.cache.find(channel => channel.name === 'suggestions')
 
 
             var suggestionguild = message.content.substring(`${prefix}suggest`.length)
-    
-    
+
+
             message.channel.send((new Discord.MessageEmbed().setTitle("**Your suggestion has been sent, thank you for suggesting!**")))
-    
-    
-    
+
+        } else {
+
+            const UsedChannel = message.guild.channels.cache.get(SuggestionChannelGuild)
+
+            if (!UsedChannel) return message.channel.send(new Discord.MessageEmbed().setDescription(" :x: Channel no longer exists Error 404!"))
+
+            const ToSend = UsedChannel
+
+
+            var suggestionguild = message.content.substring(`${prefix}suggest`.length)
+
+
+            message.channel.send((new Discord.MessageEmbed().setTitle("**Your suggestion has been sent, thank you for suggesting!**")))
+
+
+
             try {
-                return suggestionchannel.send((new Discord.MessageEmbed().setDescription(`The sugestion has been sent by: ${message.author}\n **Suggestion**: \n\n ${suggestionguild}`).setTitle("**New Suggestion**")))
+                return ToSend.send((new Discord.MessageEmbed().setDescription(`The sugestion has been sent by: ${message.author}\n **Suggestion**: \n\n ${suggestionguild}`).setTitle("**New Suggestion**")))
             } catch (e) {
                 return message.channel.send((new Discord.MessageEmbed().setDescription(`An error happened`)))
             }
 
-        
+
         }
-            
-    
+
+
 
     } else if (message.content.startsWith(ReportPrefix)) {
 
@@ -367,7 +530,7 @@ client.on('message', async message => {
         if (!args[1]) return message.channel.send((new Discord.MessageEmbed().setDescription(` :x: The report needs to contain a **reason/bug** ;D`).setTitle("**An empty Report lol**")))
 
 
-        const channel = client.channels.cache.find(channel => channel.id === '777795461720309761')
+        const Rchannel = client.channels.cache.find(channel => channel.id === '777795461720309761')
 
 
         var Report = message.content.substring(ReportPrefix.length)
@@ -381,7 +544,7 @@ client.on('message', async message => {
         try {
 
 
-            return channel.send((new Discord.MessageEmbed().setDescription(`The sugestion has been sent by: ${message.author}\n \n**The report was sent from**: ${message.channel.guild.name}\n  \n**report**: \n\n ${Report}`).setTitle("**New Report**")))
+            return Rchannel.send((new Discord.MessageEmbed().setDescription(`The sugestion has been sent by: ${message.author}\n \n**The report was sent from**: ${message.channel.guild.name}\n  \n**report**: \n\n ${Report}`).setTitle("**New Report**")))
 
 
         } catch (e) {
@@ -389,143 +552,8 @@ client.on('message', async message => {
 
             return message.channel.send((new Discord.MessageEmbed().setDescription(`An error happened`)))
         }
-
-
-    } else if (message.content === `${prefix}enable-filter`) {
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-
-
-        if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send(new Discord.MessageEmbed().setDescription("You do not have permission to do that! You need `MANAGE_GUILD` permission!"))
-
-
-        if (Filter === true) return message.channel.send(new Discord.MessageEmbed().setDescription("Filter is already active in this guild!"))
-
-        if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send(new Discord.MessageEmbed().setDescription("You do not have permission to do that! You need `MANAGE_GUILD` permission!"))
-
-        try {
-            db.set(`guild_${message.guild.id}_Filter`, true);
-
-            return message.channel.send(new Discord.MessageEmbed().setDescription("**Succesfully** activated filter messages in `" + message.guild.name + "`!"))
-
-        } catch (e) {
-
-            return message.channel.send(new Discord.MessageEmbed().setDescription("An error happened with our Data Bases!"))
-
-        }
-    } else if (message.content === `${prefix}disable-filter`) {
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-
-
-
-        if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send(new Discord.MessageEmbed().setDescription("You do not have permission to do that! You need `MANAGE_GUILD` permission!"))
-
-
-        if (Filter === false) return message.channel.send(new Discord.MessageEmbed().setDescription("Filter is already disabled in this guild!"))
-
-        try {
-            db.set(`guild_${message.guild.id}_Filter`, false);
-
-
-            return message.channel.send(new Discord.MessageEmbed().setDescription("**Succesfully** disabled filter messages in `" + message.guild.name + "`!"))
-
-        } catch (e) {
-
-            return message.channel.send(new Discord.MessageEmbed().setDescription("An error happened with our Data Bases!"))
-
-        }
-
-    } else if (message.content.startsWith(`${prefix}enable-join-notif`)){
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-
-        if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send(new Discord.MessageEmbed().setDescription("You do not have permission to do that! You need `MANAGE_GUILD` permission!"))
-
-        const channel = message.mentions.channels.first();
-
-        //if (!message.guild.channels.cache.find(channel => channel.name === ChannelName))
-
-        if(!channel) return message.channel.send(new Discord.MessageEmbed().setDescription("No valid channels were given to me."))
-
-        if (JoinNotif === true) return message.channel.send(new Discord.MessageEmbed().setDescription(":x: Notifications on member join are already activated!"))
-
-        const permissions = channel.permissionsFor(message.client.user)
-
-        if(!permissions.has("SEND_MESSAGES"))return message.channel.send(new Discord.MessageEmbed().setDescription("I do not have permission to send messages there!"))
-       
-       
-        try {
-
-            db.set(`guild_${message.guild.id}_JoinNotif`, true);
-
-            db.set(`guild_${message.guild.id}_ChannelNotif`, channel.id);
-
-            const Channel = db.get(`guild_${message.guild.id}_ChannelNotif`) || 'nil';
-
-           
-
-
-            return message.channel.send(new Discord.MessageEmbed().setDescription(":white_check_mark:  **Succesfully** enabled Join Notif messages in `" + message.guild.name + "`!"))
-
-        } catch (e) {
-
-            return message.channel.send(new Discord.MessageEmbed().setDescription(":x: An error happened with our Data Bases!"))
-
-        }
-
-    } else if (message.content === `${prefix}disable-join-notif`) {
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-
-
-        if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send(new Discord.MessageEmbed().setDescription("You do not have permission to do that! You need `MANAGE_GUILD` permission!"))
-
-
-        if (JoinNotif === false) return message.channel.send(new Discord.MessageEmbed().setDescription(":x: Notifications on member join are already off!"))
-        try {
-
-            db.set(`guild_${message.guild.id}_JoinNotif`, false);
-            return message.channel.send(new Discord.MessageEmbed().setDescription(":white_check_mark:  **Succesfully** disabled Join Notif messages in `" + message.guild.name + "`!"))
-
-        } catch (e) {
-
-            return message.channel.send(new Discord.MessageEmbed().setDescription("An error happened with our Data Bases!"))
-
-        }
-
-    }else if(message.content.startsWith(`${prefix}join-message`)){
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-
-
-        if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send(new Discord.MessageEmbed().setDescription("You do not have permission to do that! You need `MANAGE_GUILD` permission!"))
-
-        if(!args[1]) return message.channel.send(" :x: You need to specify a message to send!")
-
-        const commandName = `${prefix}join-message`
-
-        const Text = message.content.substring(commandName.length)
-
-        if(!Text) return message.channel.send(" :x: You need to specify a message to send!")
-        
-        try{
-
-            db.set(`guild_${message.guild.id}_JoinDM`, Text)
-
-            message.channel.send(new Discord.MessageEmbed().setDescription(":white_check_mark: **Succesfully** set Edited join message to: \n \n`" + Text + "` \n \n Edtitor: `" + message.author.username + "`").setThumbnail(message.guild.iconURL()).setTimestamp().setFooter("Message on join"))
-
-        }catch(e){
-
-
-        }
-    }else if(message.content === `${prefix}work`){
-        message.channel.send(new Discord.MessageEmbed().setDescription("Hello"))
     }
-    //end of sugggestions
 });
+
 
 client.login(token);
