@@ -9,6 +9,8 @@ module.exports = {
     name: "game",
     async execute(client, message,args){
 
+        const prefix = client.prefix
+
         let UserC
 
         const UserSettings = await User.findOne({
