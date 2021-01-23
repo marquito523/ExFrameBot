@@ -163,7 +163,13 @@ client.on('guildMemberAdd', async member => {
 
         } else {
 
+            if(settings.JoinNotifChannel === ""){
+
+            }else{
+
             Channel = settings.JoinNotifChannel
+
+            }
 
         }
 
@@ -330,6 +336,7 @@ client.on('message', async message => {
     if (message.content === `${prefix}`) return
 
     const args = message.content.substring(prefix.length).split(" ")
+
 
     //  const Filter = db.get(`guild_${message.guild.id}_Filter`) || false;
 
