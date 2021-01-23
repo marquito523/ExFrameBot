@@ -32,6 +32,6 @@
     "save": "^2.4.0",
     "translate-google": "^1.4.3",
     "weather-js": "^2.0.0",
-    "ytdl-core": "^4.4.3"
+    "ytdl-core": "^4.4.4"
   }
 }
