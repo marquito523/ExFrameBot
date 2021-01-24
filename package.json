@@ -14,7 +14,7 @@
     "canvas": "^2.6.1",
     "data": "^0.6.1",
     "discord-giveaways": "^4.4.1",
-    "discord-player": "^3.0.3",
+    "discord-player": "^3.2.1",
     "discord.js": "^12.5.1",
     "discord.js-commando": "^0.10.0",
     "ffmpeg": "0.0.4",
@@ -32,6 +32,6 @@
     "save": "^2.4.0",
     "translate-google": "^1.4.3",
     "weather-js": "^2.0.0",
-    "ytdl-core": "^4.4.3"
+    "ytdl-core": "^4.4.4"
   }
 }
