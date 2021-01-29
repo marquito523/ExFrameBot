@@ -247,7 +247,7 @@ client.on('message', async message => {
 
     if (message.author.bot) return;
 
-    if (message.channel.type === 'dm') return message.reply(new Discord.MessageEmbed().setDescription("I'm sorry, but I do not handle DMs. Please message me through a guild! ;D"))
+    if (message.channel.type === 'dm') return message.reply(new Discord.MessageEmbed().setTitle("Unhandled Commands").setDescription("ExFrame does **not run any commands in DMs**. ExFrame might send you a DM to alert you of something, but **no responses are expected.**").setFooter("ExFrame Support Log Errors"))
 
     //DATA_START
 
@@ -349,6 +349,9 @@ client.on('message', async message => {
 
     if (message.content === `<@!${client.user.id}>`) {
 
+        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))try{ return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) }catch(error){return message.author.send(":x: An unexpected error occiered. We are investigating...")}
+
+
         if (!message.guild.me.hasPermission("EMBED_LINKS")) {
 
             try {
@@ -387,6 +390,9 @@ client.on('message', async message => {
 
                 message.delete()
 
+                if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))return
+
+
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Wow there! Chill out ${message.author}! This is a friendly community! You can not swear in here. Be careful next time. If this happens to frequently, some mesures will be taken against you!`).setTitle("Hey there!"))
 
             } catch (e) {
@@ -399,6 +405,9 @@ client.on('message', async message => {
     }
 
     if (message.content === `${prefix}bot info`) {
+
+        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))try{ return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) }catch(error){return message.author.send(":x: An unexpected error occiered. We are investigating...")}
+
         if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
         var embed = new Discord.MessageEmbed()
             .setTitle('** ExFrame Help Information**')
@@ -484,6 +493,9 @@ client.on('message', async message => {
 
     } else if (message.content.startsWith(`${prefix}suggest`)) {
 
+        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))try{ return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) }catch(error){return message.author.send(":x: An unexpected error occiered. We are investigating...")}
+
+
         if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
 
 
@@ -501,7 +513,6 @@ client.on('message', async message => {
 
 
             message.channel.send((new Discord.MessageEmbed().setTitle("**Your suggestion has been sent, thank you for suggesting!**")))
-
         } else {
 
             const UsedChannel = message.guild.channels.cache.get(SuggestionChannelGuild)
@@ -530,6 +541,9 @@ client.on('message', async message => {
 
 
     } else if (message.content.startsWith(ReportPrefix)) {
+
+        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))try{ return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) }catch(error){return message.author.send(":x: An unexpected error occiered. We are investigating...")}
+
 
         if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
 
