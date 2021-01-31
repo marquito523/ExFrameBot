@@ -70,7 +70,7 @@ client.on('ready', () => {
     mongodb.connect(`mongodb+srv://marquito523:${DB_PASSWORD}@cluster0.qmekk.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`, dbOptions).then(console.log('Database is connected!'))
     console.log(`${client.user.username}'s status up, and running!`);
     setInterval(() => {
-        const statuses = [`${defaultprefix}help||${client.guilds.cache.size} guilds, not bad`, `${defaultprefix}help to start!`, `${defaultprefix}help|| ${client.users.cache.size} users O.o`, `${defaultprefix}help|| Hey guys, have a great day!`];
+        const statuses = [`${defaultprefix}help||${client.guilds.cache.size} guilds, not bad`, `${defaultprefix}help to start!`, `${defaultprefix}help|| ${client.guilds.cache.map(s => s.memberCount).reduce((a, b) => a + b)} users O.o`, `${defaultprefix}help|| Hey guys, have a great day!`];
         const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
 
         client.user.setActivity(randomStatus, {
@@ -424,7 +424,7 @@ client.on('message', async message => {
                 inline: true
             }, {
                 name: '**Bot Users**',
-                value: `${client.users.cache.size}`,
+                value: `${client.guilds.cache.map(s => s.memberCount).reduce((a, b) => a + b)}`,
                 inline: true
             },
 
