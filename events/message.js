@@ -2,7 +2,7 @@ const mongodb = require("mongoose")
   
 const Guild = require("../commands/Models/Guild")
 
-const { defaultprefix } = require("../config.json")
+const { defaultprefix, Enable_Console_Write_Commmand } = require("../config.json")
 
 module.exports = async (client, message) => {
 
@@ -58,5 +58,8 @@ module.exports = async (client, message) => {
 
     const cmd = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
 
-    if (cmd) cmd.execute(client, message, args);
+    if (cmd){ 
+    cmd.execute(client, message, args)
+    if(Enable_Console_Write_Commmand === true)console.log(`${message.author.username} has run ${cmd.name} command. => Id: ${message.author.id}`)  
+    }
 };
