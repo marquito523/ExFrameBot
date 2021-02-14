@@ -175,24 +175,25 @@ client.on('guildMemberAdd', async member => {
 
                 }
 
+                const joinembed = new Discord.MessageEmbed()
+
+                .setTitle(`**Welcome to ${member.guild}**`)
+        
+                .setDescription(`${SendText}`)
+        
+            try {
+                member.send(joinembed)
+            } catch (e) {
+        
+            }
+
             }
 
         } else {
+            
         }
     }
 
-
-    const joinembed = new Discord.MessageEmbed()
-
-        .setTitle(`**Welcome to ${member.guild}**`)
-
-        .setDescription(`${SendText}`)
-
-    try {
-        member.send(joinembed)
-    } catch (e) {
-
-    }
 
 
     if (defaultRole === "false") {
