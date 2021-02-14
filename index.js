@@ -10,7 +10,8 @@ const dbOptions = {
 const mongodb = require("mongoose")
 const Guild = require("./commands/Models/Guild")
 const {
-    defaultprefix
+    defaultprefix,
+    Enable_Console_Write_Commmand 
 } = require("./config.json")
 const {
     token
@@ -24,6 +25,7 @@ const { codePointAt } = require('ffmpeg-static');
 client.player = new Player(client);
 client.config = require('./config.json');
 client.emotes = client.config.emojis;
+client.ConsoleLog = Enable_Console_Write_Commmand
 //client.filters = client.config.filters;
 client.commands = new discord.Collection();
 //client.prefix = client.config.prefix
@@ -290,6 +292,8 @@ client.on('message', async message => {
 
 
     if (message.content === `<@!${client.user.id}>`) {
+
+        if(Enable_Console_Write_Commmand === true)console.log(`${message.author.username} has pinged ExFrame. => Id: ${message.author.id}`)
 
         if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) try { return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) } catch (error) { return message.author.send(":x: An unexpected error occiered. We are investigating...") }
 
