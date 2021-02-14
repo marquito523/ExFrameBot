@@ -4,13 +4,15 @@
         "error": ":warning:",
         "queue": ":bar_chart:",
         "music": ":musical_note:",
-        "success": ":white_check_mark:"
+        "success": ":white_check_mark: "
     },
     
         "token": "NzMzNjY1MzYwMTg4MDE0NjQ0.XxGdHA.a89mEcrbq0fo80MI1b1ASeslwbI",
         "defaultprefix": "m!",
         "DB_NAME": "marquito523",
         "DB_PASSWORD": "SeYE9oAiFhkhGWbH",
-        "DefaultJoinMessage": "Welcome! We hope you enjoy your stay here! Please follow the rules of the server!"
+        "DefaultJoinMessage": "Welcome! We hope you enjoy your stay here! Please follow the rules of the server!",
     
+        "filters": ["8D", "gate", "haas", "phaser", "treble", "tremolo", "vibrato", "reverse", "karaoke", "flanger", "mcompand", "pulsator", "subboost", "bassboost", "vaporwave", "nightcore", "normalizer", "surrounding"]
+
 }
