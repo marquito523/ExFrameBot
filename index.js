@@ -1,48 +1,32 @@
 const fs = require('fs');
-
 const discord = require('discord.js');
-
 const Discord = require('discord.js');
-
 const { DB_PASSWORD, DB_NAME } = require("./config.json")
-
-
-
 const dbOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: true
 }
-
 const mongodb = require("mongoose")
-
 const Guild = require("./commands/Models/Guild")
-
 const {
     defaultprefix
 } = require("./config.json")
-
 const {
     token
 } = require("./config.json")
-
 const client = new discord.Client(
     { disableEveryone: false });
-
-
 const {
     Player
 } = require('discord-player');
 const { codePointAt } = require('ffmpeg-static');
-
-
 client.player = new Player(client);
 client.config = require('./config.json');
 client.emotes = client.config.emojis;
 //client.filters = client.config.filters;
 client.commands = new discord.Collection();
 //client.prefix = client.config.prefix
-
 fs.readdirSync('./commands').forEach(dirs => {
     const commands = fs.readdirSync(`./commands/${dirs}`).filter(files => files.endsWith('.js'));
 
@@ -51,7 +35,6 @@ fs.readdirSync('./commands').forEach(dirs => {
         client.commands.set(command.name, command);
     };
 });
-
 
 const events = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 const player = fs.readdirSync('./player').filter(file => file.endsWith('.js'));
@@ -81,10 +64,11 @@ client.on('ready', () => {
 
 client.on('guildCreate', guild => {
 
-    guild.systemChannel.send((new Discord.MessageEmbed().setDescription(`**Hello!** \n \n To start using me please type in ${defaultprefix}help \n I'm happy to be with you and I hope I will be able to help you in whatever I can! You view my list of commands in help and following the instructions. To make my help + category work, you will have to do the following => \n **Example**: let's say I want to know about music => ${prefix}help music or moderation ${prefix}help moderation etc... \n \n This is specified in help.\n **Hope you won't regret inviting me D:**`).setTitle("**ExFrame**").setTimestamp().setFooter("ExFrame says hello")));
+    guild.systemChannel.send((new Discord.MessageEmbed().setDescription(`**Hello!** \n \n To start using me please type in ${defaultprefix}help \n I'm happy to be with you and I hope I will be able to help you in whatever I can! You view my list of commands in help and following the instructions. To make my help + category work, you will have to do the following => \n **Example**: let's say I want to know about music => ${defaultprefix}help music or moderation ${defaultprefix}help moderation etc... \n \n This is specified in help.\n \n**Useful Links** \n \n **Invite Link:** To invite ExFrame [click here](https://discord.com/api/oauth2/authorize?client_id=733665360188014644&permissions=275901542&scope=bot)  \n \n **Vote ExFrame:** To vote ExFrame on Top.gg [click here](https://top.gg/bot/733665360188014644) \n \n**ExFrame Support Guild:** To join ExFrame's Support Guild [click here](https://discord.gg/6zqN4pWpnm) \n \n **ExFrame Support Website:** To visit ExFrame's Website [click here](https://marquito523.github.io/ExFrame-Website/)`).setTitle("**ExFrame**").setTimestamp().setFooter("Introduction to ExFrame").setThumbnail(client.user.displayAvatarURL({ size: 1024 }))));
     try {
-        const channel = client.channels.cache.find(channel => channel.id === '790516050147803156')
-        channel.send(new Discord.MessageEmbed().setTitle(`${guild.name} Inveted ExFrame!`).setDescription("Thank you for inviting ExFrame!"))
+        const channel = client.channels.cache.find(channel => channel.id === '805516685066371093')
+        if(!channel)return 
+        channel.send(new Discord.MessageEmbed().setTitle(`${guild.name} Invited`).setDescription("Thank you for inviting ExFrame!"))
     } catch (e) {
 
     }
@@ -94,13 +78,9 @@ client.on('guildCreate', guild => {
 client.on('guildMemberAdd', async member => {
 
     let Pguild
-
     let JoinNotif
-
     let defaultRole
-
     let Channel
-
     let SendText
 
 
@@ -118,7 +98,6 @@ client.on('guildMemberAdd', async member => {
 
     if (!Pguild) {
 
-
         SendText = `Welcome! we hope you enjoy your stay here! Please follow the rules of the server!`
 
         JoinNotif = false
@@ -128,7 +107,6 @@ client.on('guildMemberAdd', async member => {
     } else {
 
         if (!settings.SendText) {
-
 
             SendText = `Welcome! we hope you enjoy your stay here! Please follow the rules of the server!`
 
@@ -163,11 +141,11 @@ client.on('guildMemberAdd', async member => {
 
         } else {
 
-            if(settings.JoinNotifChannel === ""){
+            if (settings.JoinNotifChannel === "") {
 
-            }else{
+            } else {
 
-            Channel = settings.JoinNotifChannel
+                Channel = settings.JoinNotifChannel
 
             }
 
@@ -240,13 +218,8 @@ client.on('guildMemberAdd', async member => {
 
 
 client.on('message', async message => {
-
-
-
     if (message.author.id === client.user.id) return;
-
     if (message.author.bot) return;
-
     if (message.channel.type === 'dm') return message.reply(new Discord.MessageEmbed().setTitle("Unhandled Commands").setDescription("ExFrame does **not run any commands in DMs**. ExFrame might send you a DM to alert you of something, but **no responses are expected.**").setFooter("ExFrame Support Log Errors"))
 
     //DATA_START
@@ -285,71 +258,39 @@ client.on('message', async message => {
         Filter = false
 
     } else {
-
         if (!settings.prefix) {
-
             prefix = defaultprefix
-
         } else {
-
             prefix = settings.prefix
         }
-
         if (!settings.Filter) {
-
             Filter = false
-
         } else {
-
             Filter = settings.Filter
-
         }
         if (!settings.SuggestionChannel) {
-
-            SuggestionChannelGuild = "None"
-
+        SuggestionChannelGuild = "None"
         } else {
-
             SuggestionChannelGuild = settings.SuggestionChannel
-
-
         }
-
         if (!settings.JoinNotif) {
 
             JoinNotif = false
-
         } else {
 
             JoinNotif = settings.JoinNotif
-
         }
     }
 
     //DATA_END
-
-
-    const ReportPrefix = `${prefix}report`
-
-    if (!message.guild) return
-
+     if (!message.guild) return
     if (message.content === `${prefix}`) return
-
     const args = message.content.substring(prefix.length).split(" ")
-
-
-    //  const Filter = db.get(`guild_${message.guild.id}_Filter`) || false;
-
-    //const JoinNotif = db.get(`guild_${message.guild.id}_JoinNotif`) || false;
-
-    //let SuggestionChannelGuild = db.get(`guild_${message.guild.id}_SuggestionChannel`) || "None"
-
-
 
 
     if (message.content === `<@!${client.user.id}>`) {
 
-        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))try{ return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) }catch(error){return message.author.send(":x: An unexpected error occiered. We are investigating...")}
+        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) try { return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) } catch (error) { return message.author.send(":x: An unexpected error occiered. We are investigating...") }
 
 
         if (!message.guild.me.hasPermission("EMBED_LINKS")) {
@@ -390,7 +331,7 @@ client.on('message', async message => {
 
                 message.delete()
 
-                if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))return
+                if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) return
 
 
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Wow there! Chill out ${message.author}! This is a friendly community! You can not swear in here. Be careful next time. If this happens to frequently, some mesures will be taken against you!`).setTitle("Hey there!"))
@@ -404,178 +345,6 @@ client.on('message', async message => {
 
     }
 
-    if (message.content === `${prefix}bot info`) {
-
-        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))try{ return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) }catch(error){return message.author.send(":x: An unexpected error occiered. We are investigating...")}
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-        try {
-        var embed = new Discord.MessageEmbed()
-            .setTitle('** ExFrame Help Information**')
-            .setURL("https://marquito523.github.io/ExFrame-Website/")
-            .setTimestamp()
-            .setThumbnail(client.user.displayAvatarURL({size: 1024}))
-            .addFields({
-                name: '**Bot Name**',
-                value: "ExFrame",
-                inline: true
-            }, {
-                name: '\u200B',
-                value: '\u200B',
-                inline: true
-            }, {
-                name: '**Bot Users**',
-                value: `${client.guilds.cache.map(s => s.memberCount).reduce((a, b) => a + b)}`,
-                inline: true
-            },
-
-                {
-                    name: ' **Guilds**',
-                    value: `${client.guilds.cache.size}`,
-                    inline: true
-                }, {
-                name: '\u200B',
-                value: '\u200B',
-                inline: true
-            }, {
-                name: '**Partners**',
-                value: `Exyno by <@334297339831255040>`,
-                inline: true
-            },
-
-                {
-                    name: '**Library**',
-                    value: `Discord.js`,
-                    inline: true
-                }, {
-                name: '\u200B',
-                value: '\u200B',
-                inline: true
-            }, {
-                name: `Bot Music Package`,
-                value: "Discord-Player",
-                inline: true
-            },
-
-                {
-                    name: '**Bot Status**',
-                    value: `No bugs found`,
-                    inline: true
-                }, {
-                name: '\u200B',
-                value: '\u200B',
-                inline: true
-            }, {
-                name: '**Version**',
-                value: "1, 0, 0",
-                inline: true
-            },
-
-                {
-                    name: '**Bot Owner**',
-                    value: `<@546284284713893889>`,
-                    inline: true
-                }, {
-                name: '\u200B',
-                value: '\u200B',
-                inline: true
-            }, {
-                name: '**Channels**',
-                value: `${client.channels.cache.size}`,
-                inline: true
-            },
-            )
-            .setFooter("For anymore help, click the title.")
-        
-            return message.channel.send(embed)
-        } catch (e) {
-            return message.channel.send(new Discord.MessageEmbed().setDescription("Unexpected error occiered. Please try again"))
-        }
-
-    } else if (message.content.startsWith(`${prefix}suggest`)) {
-
-        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))try{ return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) }catch(error){return message.author.send(":x: An unexpected error occiered. We are investigating...")}
-
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-
-
-        if (!args[1]) return message.channel.send((new Discord.MessageEmbed().setDescription(`The suggestion needs to contain a **suggestion** ;D`).setTitle("**An empty suggestion lol**")))
-
-        if (SuggestionChannelGuild === "None") {
-
-            if (!message.guild.channels.cache.find(channel => channel.name === 'suggestions')) return message.channel.send((new Discord.MessageEmbed().setDescription(` :x: **No suggestion channel preset**, and no channels name "suggestions" within this guild! To preset suggestion, run ${prefix}setup-suggestion`)))
-
-
-            const suggestionchannel = message.guild.channels.cache.find(channel => channel.name === 'suggestions')
-
-
-            var suggestionguild = message.content.substring(`${prefix}suggest`.length)
-
-
-            message.channel.send((new Discord.MessageEmbed().setTitle("**Your suggestion has been sent, thank you for suggesting!**")))
-        } else {
-
-            const UsedChannel = message.guild.channels.cache.get(SuggestionChannelGuild)
-
-            if (!UsedChannel) return message.channel.send(new Discord.MessageEmbed().setDescription(" :x: Channel no longer exists Error 404!"))
-
-            const ToSend = UsedChannel
-
-
-            var suggestionguild = message.content.substring(`${prefix}suggest`.length)
-
-
-            message.channel.send((new Discord.MessageEmbed().setTitle("**Your suggestion has been sent, thank you for suggesting!**")))
-
-
-
-            try {
-                return ToSend.send((new Discord.MessageEmbed().setDescription(`The sugestion has been sent by: ${message.author}\n **Suggestion**: \n\n ${suggestionguild}`).setTitle("**New Suggestion**")))
-            } catch (e) {
-                return message.channel.send((new Discord.MessageEmbed().setDescription(`An error happened`)))
-            }
-
-
-        }
-
-
-
-    } else if (message.content.startsWith(ReportPrefix)) {
-
-        if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES'))try{ return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) }catch(error){return message.author.send(":x: An unexpected error occiered. We are investigating...")}
-
-
-        if (!message.guild.me.hasPermission("EMBED_LINKS")) return message.channel.send("I require `EMBED_LINKS` permission to be able to function")
-
-
-        if (!args[1]) return message.channel.send((new Discord.MessageEmbed().setDescription(` :x: The report needs to contain a **reason/bug** ;D`).setTitle("**An empty Report lol**")))
-
-
-        const Rchannel = client.channels.cache.find(channel => channel.id === '777795461720309761')
-
-
-        var Report = message.content.substring(ReportPrefix.length)
-
-
-        var member = message.author
-
-
-        message.channel.send((new Discord.MessageEmbed().setTitle("**Your Report has been sent, thank you for reporting!**")))
-        member.send((new Discord.MessageEmbed().setDescription("Your report has **succesfully** been sent to **ExFrame's support server**. If developpers need more information, you will receive a DM. Thanks for Reporting! \n \n **Report Contains**: `" + Report + "`\n Report sent by " + member.username).setFooter("Report sent at").setTimestamp()))
-        try {
-
-
-            return Rchannel.send((new Discord.MessageEmbed().setDescription(`The sugestion has been sent by: ${message.author}\n \n**The report was sent from**: ${message.channel.guild.name}\n  \n**report**: \n\n ${Report}`).setTitle("**New Report**")))
-
-
-        } catch (e) {
-
-
-            return message.channel.send((new Discord.MessageEmbed().setDescription(`An error happened`)))
-        }
-    }
 });
-
 
 client.login(token);
