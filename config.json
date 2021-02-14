@@ -12,7 +12,7 @@
         "DB_NAME": "marquito523",
         "DB_PASSWORD": "SeYE9oAiFhkhGWbH",
         "DefaultJoinMessage": "Welcome! We hope you enjoy your stay here! Please follow the rules of the server!",
-    
+        "Enable_Console_Write_Commmand": true,
         "filters": ["8D", "gate", "haas", "phaser", "treble", "tremolo", "vibrato", "reverse", "karaoke", "flanger", "mcompand", "pulsator", "subboost", "bassboost", "vaporwave", "nightcore", "normalizer", "surrounding"]
 
 }
