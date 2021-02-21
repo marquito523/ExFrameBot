@@ -20,7 +20,6 @@
     "discord.js-pagination": "^1.0.3",
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.2.7",
-    "google": "^2.1.0",
     "google-translate": "^3.0.0",
     "got": "^11.8.0",
     "install": "^0.13.0",
