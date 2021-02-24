@@ -3,12 +3,12 @@ const discord = require('discord.js');
 const Discord = require('discord.js');
 const { DB_PASSWORD, DB_NAME } = require("./config.json")
 const DeleteFile = require("./commands/Executor/DeleteMessager")
-
 const dbOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: true
 }
+const muteModel = require('./commands/Models/mute')
 const mongodb = require("mongoose")
 const Guild = require("./commands/Models/Guild")
 const {
@@ -65,6 +65,27 @@ client.on('ready', () => {
             type: 'WATCHING',
         });
     }, 60000);
+    setInterval(async () => {
+        for(const guild of client.guilds.cache) {
+            const muteArray = await muteModel.find({
+                guildID: guild[0],
+            })
+            for(const muteDoc of muteArray) {
+                if(Date.now() >= Number(muteDoc.length)) {
+                    const guild = client.guilds.cache.get(muteDoc.guildID);
+                    const member = guild ? guild.members.cache.get(muteDoc.memberID) : null;
+                    const muteRole = guild ? guild.roles.cache.find(r => r.name == 'Muted') : null;
+                    if(member) {
+                        await member.roles.remove(muteRole ? muteRole.id : '').catch(e => console.log(e))
+                        for(const role of muteDoc.memberRoles) {
+                            await member.roles.add(role).catch(e => console.log(e));
+                        }
+                    }
+                    await muteDoc.deleteOne().catch(e => console.log(e));
+                }
+            }
+        }
+    }, 60000)
 });
 
 client.on('guildCreate', guild => {
@@ -81,6 +102,19 @@ client.on('guildCreate', guild => {
 
 
 client.on('guildMemberAdd', async member => {
+
+    const muteDoc = await muteModel.findOne({
+        guildID: member.guild.id, 
+        memberID: member.id,
+    })
+    if(muteDoc) {
+        const muteRole = member.guild.roles.cache.find(r => r.name == 'Muted');
+        if(muteRole) {
+            member.roles.add(muteRole.id).catch(e => console.log(e));
+        }
+        muteDoc.memberRoles = [];
+        await muteDoc.save().catch(e => console.log(e))
+    }
 
     let Pguild
     let JoinNotif
