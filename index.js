@@ -8,6 +8,7 @@ const dbOptions = {
     useUnifiedTopology: true,
     useFindAndModify: true
 }
+const DiscordPrivateMessage = require("./commands/Executor/DiscordPrivateMessage")
 const muteModel = require('./commands/Models/mute')
 const mongodb = require("mongoose")
 const Guild = require("./commands/Models/Guild")
@@ -87,10 +88,9 @@ client.on('ready', () => {
         }
     }, 60000)
 });
-
 client.on('guildCreate', guild => {
 
-    guild.systemChannel.send((new Discord.MessageEmbed().setDescription(`**Hello!** \n \n To start using me please type in ${defaultprefix}help \n I'm happy to be with you and I hope I will be able to help you in whatever I can! You view my list of commands in help and following the instructions. To make my help + category work, you will have to do the following => \n **Example**: let's say I want to know about music => ${defaultprefix}help music or moderation ${defaultprefix}help moderation etc... \n \n This is specified in help.\n \n**Useful Links** \n \n **Invite Link:** To invite ExFrame [click here](https://discord.com/api/oauth2/authorize?client_id=733665360188014644&permissions=275901542&scope=bot)  \n \n **Vote ExFrame:** To vote ExFrame on Top.gg [click here](https://top.gg/bot/733665360188014644) \n \n**ExFrame Support Guild:** To join ExFrame's Support Guild [click here](https://discord.gg/6zqN4pWpnm) \n \n **ExFrame Support Website:** To visit ExFrame's Website [click here](https://marquito523.github.io/ExFrame-Website/)`).setTitle("**ExFrame**").setTimestamp().setFooter("Introduction to ExFrame").setThumbnail(client.user.displayAvatarURL({ size: 1024 }))));
+    guild.systemChannel.send((new Discord.MessageEmbed().setDescription(`**Hello!** \n \n To start using me please type in ${defaultprefix}help \n I'm happy to be with you and I hope I will be able to help you in whatever I can! You view my list of commands in help and following the instructions. To make my help + category work, you will have to do the following => \n **Example**: let's say I want to know about music => ${defaultprefix}help music or moderation ${defaultprefix}help moderation etc... \n \n This is specified in help.\n \n**Useful Links** \n \n **Invite Link:** To invite ExFrame [click here](https://discord.com/api/oauth2/authorize?client_id=733665360188014644&permissions=275901542&scope=bot)  \n \n **Vote ExFrame:** To vote ExFrame on Top.gg [click here](https://top.gg/bot/733665360188014644) \n \n**ExFrame Support Guild:** To join ExFrame's Support Guild [click here](https://discord.gg/6zqN4pWpnm) \n \n **ExFrame Support Website:** To visit ExFrame's Website [click here](https://marquito523.github.io/ExFrame-Website/) \n \n Since you have just added ExFrame to your guild, do you want to start the setup? If yes type "m!start-setup"`).setTitle("**ExFrame**").setTimestamp().setFooter("Introduction to ExFrame").setThumbnail(client.user.displayAvatarURL({ size: 1024 }))));
     try {
         const channel = client.channels.cache.find(channel => channel.id === '805516685066371093')
         if (!channel) return
@@ -99,8 +99,6 @@ client.on('guildCreate', guild => {
 
     }
 });
-
-
 client.on('guildMemberAdd', async member => {
 
     const muteDoc = await muteModel.findOne({
@@ -115,7 +113,6 @@ client.on('guildMemberAdd', async member => {
         muteDoc.memberRoles = [];
         await muteDoc.save().catch(e => console.log(e))
     }
-
     let Pguild
     let JoinNotif
     let defaultRole
@@ -189,38 +186,36 @@ client.on('guildMemberAdd', async member => {
             }
         }
     }
-
 });
-
-
 
 client.on('message', async message => {
     if (message.author.id === client.user.id) return;
     if (message.author.bot) return;
-    if (message.channel.type === 'dm') return message.reply(new Discord.MessageEmbed().setTitle("Unhandled Commands").setDescription("ExFrame does **not run any commands in DMs**. ExFrame might send you a DM to alert you of something, but **no responses are expected.**").setFooter("ExFrame Support Log Errors"))
-
+    if (message.channel.type === 'dm'){
+        return DiscordPrivateMessage.execute(message, client)
+    }
+    if(client.user.name === "MarqTest" && message.guild.id === 774018500330782722) return 
     //DATA_START
-
     let prefix
     let Pguild
     let SuggestionChannelGuild
     let JoinNotif
     let Filter
 
+    if(!message.guild){
+        return message.reply(new discord.MessageEmbed().setDescription("An error occiered when writing a command. Error type: \n \n `Seems like the message was sent through DMs but wasn't recognized as it.`"))
+    }
     const settings = await Guild.findOne({
         guildID: message.guild.id
     }, (err, guild) => {
         Pguild = guild
         if (err) console.error(err)
     })
-
     if (!Pguild) {
-
         prefix = defaultprefix
         SuggestionChannelGuild = "None"
         JoinNotif = false
         Filter = false
-
     } else {
         if (!settings.prefix) {
             prefix = defaultprefix
@@ -238,10 +233,8 @@ client.on('message', async message => {
             SuggestionChannelGuild = settings.SuggestionChannel
         }
         if (!settings.JoinNotif) {
-
             JoinNotif = false
         } else {
-
             JoinNotif = settings.JoinNotif
         }
     }
@@ -249,15 +242,10 @@ client.on('message', async message => {
     if (!message.guild) return
     if (message.content === `${prefix}`) return
     const args = message.content.substring(prefix.length).split(" ")
-
     if (message.content === `<@!${client.user.id}>`) {
-
         if (Enable_Console_Write_Commmand === true) console.log(`${message.author.username} has pinged ExFrame. => Id: ${message.author.id}`)
-
         if (!message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) try { return message.author.send(new Discord.MessageEmbed().setTitle("Discord Permissions").setURL("https://support.discord.com/hc/en-us/articles/206029707-How-do-I-set-up-Permissions-").setDescription(`ExFrame could not send messages into ${message.channel} because he doesn't have \`SEND_MESSAGES\` permissions.`)) } catch (error) { return message.author.send(":x: An unexpected error occiered. We are investigating...") }
-
         if (!message.guild.me.hasPermission("EMBED_LINKS")) {
-
             try {
                 return message.channel.send("Hello, I'm ExFrame \n My prefix in this guild is: `" + prefix + "` \n To start using my functionalities:`" + prefix + "`help \n \n**Warning**: *I do not have `EMBED_LINKS` permission. Without me having it, you can not use any commands!*")
 
@@ -265,8 +253,7 @@ client.on('message', async message => {
                 return message.channel.send("Unexpected error happened!")
             }
         } else {
-
-            try {
+                try {
                 let ExFrame = client.user
                 let avatar = ExFrame.displayAvatarURL({
                     size: 1024
@@ -274,24 +261,18 @@ client.on('message', async message => {
                 return message.channel.send(new Discord.MessageEmbed().setDescription("Hello, I'm ExFrame \n My prefix in this guild is: `" + prefix + "` \n To start using my functionalities: `" + prefix + "help`.").setTitle("ExFrame").setTimestamp().setThumbnail(avatar))
             } catch (e) {
                 return message.channel.send(":x: Unexpected error happened when running the command!")
-
             }
         }
     }
 
     let FilterTextMessage = message.content.toLowerCase()
     if (FilterTextMessage.includes("fuck") || FilterTextMessage.includes("shit") || FilterTextMessage.includes("fock") || FilterTextMessage.includes("nerd") || FilterTextMessage.includes("nigger") || FilterTextMessage.includes("niggor") || FilterTextMessage.includes("nigar") || FilterTextMessage.includes("nig") || FilterTextMessage.includes("mdafucker") || FilterTextMessage.includes("fuckyou") || FilterTextMessage.includes("nigeria") || FilterTextMessage.includes("bitch") || FilterTextMessage.includes("bich") || FilterTextMessage.includes("b***") || FilterTextMessage.includes("f***") || FilterTextMessage.includes("putain") || FilterTextMessage.includes("ta mere") || FilterTextMessage.includes("Ta mere") || FilterTextMessage.includes("ta mère") || FilterTextMessage.includes("Ta mère") || FilterTextMessage.includes("nique") || FilterTextMessage.includes("wtf")) {
-
         if (Filter === true) {
-
             if (!message.guild.me.hasPermission("MANAGE_MESSAGES")) return message.channel.send("I do not have permissions to delete messages.")
 
             DeleteFile.execute(message)
-
         }
-
     }
-
 });
 
 client.login(token);
