@@ -3,9 +3,11 @@ const mongodb = require("mongoose")
   
 const Guild = require("../commands/Models/Guild")
 
-const { defaultprefix, Enable_Console_Write_Commmand } = require("../config.json");
+const { defaultprefix, Enable_Console_Write_Commmand, WebsiteURL } = require("../config.json");
 
 const Throll = new Map();
+
+
 
 
 module.exports = async (client, message) => {
@@ -19,6 +21,8 @@ module.exports = async (client, message) => {
     if(message.author.id === client.user.id) return;
 
     if (message.author.bot || message.channel.type === 'dm') return;
+
+    if(client.user.name === "Marq" && message.guild.id === 774018500330782722) return 
 
     let prefix
 
@@ -53,6 +57,8 @@ module.exports = async (client, message) => {
 
    client.prefix = prefix
 
+   client.Website = WebsiteURL
+
 
     if (message.content.indexOf(prefix) !== 0) return;
 
@@ -63,7 +69,7 @@ module.exports = async (client, message) => {
 
     if (cmd){ 
     if(Throll.get(message.author.id))return message.channel.send("You are executing commands too quicly! Wait a few seconds.")
-    cmd.execute(client, message, args)
+    cmd.execute(client, message, args, settings)
     AddThroll(message.author.id, message.author)
     if(Enable_Console_Write_Commmand === true)console.log(`${message.author.username} has run ${cmd.name} command. => Id: ${message.author.id}`)  
     }
