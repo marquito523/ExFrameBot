@@ -15,7 +15,8 @@ const Guild = require("./commands/Models/Guild")
 const {
     defaultprefix,
     Enable_Console_Write_Commmand,
-    Version
+    Version,
+    WebsiteURL
 } = require("./config.json")
 const {
     token
