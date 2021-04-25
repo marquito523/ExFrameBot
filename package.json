@@ -12,6 +12,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "canvas": "^2.6.1",
+    "child_process": "^1.0.2",
     "data": "^0.6.1",
     "discord-giveaways": "^4.4.1",
     "discord-player": "^3.2.1",
