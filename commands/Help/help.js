@@ -31,6 +31,8 @@ module.exports = {
             .setTitle(`Moderation`)
             .setURL(Website)
             .addField(`More information at ${prefix}help moderation`, "Moderation Help")
+            .addField(`Forbidden`, `Makes ExFrame ignore the channe. Usage ${prefix}forbidden <channel>`)
+            .addField(`Unforbidden`, `Makes ExFrame unignore the channe. Usage ${prefix}unforbidden <channel>`)
             .addField(`Kick`, `Kicks a member. Usage: ${prefix}kick <@user> [reason]`)
             .addField(`Ban`, `Bans a member. Usage: ${prefix}ban <@user> [reason]`)
             .addField(`Purge`, `Clear messages. Usage:${prefix}purge <message count>`)
