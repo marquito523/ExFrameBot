@@ -29,6 +29,8 @@ module.exports = async (client, message) => {
     let Pguild
 
 
+
+
     const settings = await Guild.findOne({
 
         guildID: message.guild.id
@@ -40,6 +42,22 @@ module.exports = async (client, message) => {
         if (err) console.error(err)
 
     })
+    
+    let AllowSend = true
+    if(settings){
+    const IgnoredChannels = settings.IgnoredChannels || []
+
+
+    for(var i = 0; i < IgnoredChannels.length; i++){
+        const ChannelID = message.channel.id
+        if(IgnoredChannels[i] === ChannelID.toString()){
+            return AllowSend = false
+        }
+    }
+}
+
+if(AllowSend === false)return
+
 
    if (!Pguild)
    {
