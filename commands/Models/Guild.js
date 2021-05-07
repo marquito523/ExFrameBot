@@ -14,7 +14,7 @@ const guildSchema = mongoose.Schema({
     JoinNotifChannel: String,
     defaultRole: String,
     CategoryTicketId: String,
-    
+    IgnoredChannels: Array
 });
 
 module.exports = mongoose.model('Guild', guildSchema, 'guilds');
