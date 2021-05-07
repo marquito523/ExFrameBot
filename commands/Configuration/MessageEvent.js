@@ -3,9 +3,6 @@ const mongodb = require("mongoose")
 const DeleteFile = require("../Executor/DeleteMessager");
 const DiscordPrivateMessage = require('../Executor/DiscordPrivateMessage')
 const Discord = require('discord.js');
-const DeleteFile = require("../Executor/DeleteMessager");
-const DiscordPrivateMessage = require('../Executor/DiscordPrivateMessage')
-const Discord = require('discord.js');
 const {
     defaultprefix,
     Enable_Console_Write_Commmand,
