@@ -1,8 +1,0 @@
-{
-
-    "Input":{
-
-        "UnhandledInput": ["if()", "try{", ".cs", ".js", ".c", ".py"]
-    }
-
-}
