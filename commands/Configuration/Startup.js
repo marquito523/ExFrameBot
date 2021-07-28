@@ -14,8 +14,8 @@ const { defaultprefix } = require("../../config.json")
 module.exports = {
     execute(client){
 
-        mongodb.connect(`mongodb+srv://MarqBot:${MARQPASS}@cluster0.njkac.mongodb.net/${MARQNAME}?retryWrites=true&w=majority`, dbOptions).then(console.log("Conncetion Succes!"))
-        //mongodb.connect(`mongodb+srv://marquito523:${DB_PASSWORD}@cluster0.qmekk.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`, dbOptions).then(console.log('------------------------ \n \n Connection To MongoDB Succeeded.'))
+        //mongodb.connect(`mongodb+srv://MarqBot:${MARQPASS}@cluster0.njkac.mongodb.net/${MARQNAME}?retryWrites=true&w=majority`, dbOptions).then(console.log("Conncetion Succes!"))
+        mongodb.connect(`mongodb+srv://marquito523:${DB_PASSWORD}@cluster0.qmekk.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`, dbOptions).then(console.log('------------------------ \n \n Connection To MongoDB Succeeded.'))
          console.log(`\n \n ------------------------ \n \n --${client.user.username} Is Currently Running-- \n \n ------------------------ \n \n ${client.user.username} is ready to serve all the server.  \n \n ------------------------ \n \n Commands are all seted up! \n \n ------------------------ \n \n Using MongoDB | Using Discord Player | Using Discord.js \n \n ------------------------`);
           setInterval(() => {
               const statuses = [`${defaultprefix}help||${client.guilds.cache.size} guilds, not bad`, `${defaultprefix}help to start!`, `${defaultprefix}help|| ${client.guilds.cache.map(s => s.memberCount).reduce((a, b) => a + b)} users O.o`, `${defaultprefix}help|| Hey guys, have a great day!`];
