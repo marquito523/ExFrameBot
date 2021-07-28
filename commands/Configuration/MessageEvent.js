@@ -99,8 +99,6 @@ module.exports = {
             if (err) console.error(err)
         })
 
-
-
         let AllowSend = true
         if (settings) {
             var IgnoredChannels = settings.IgnoredChannels || []
@@ -115,20 +113,19 @@ module.exports = {
             }
         }
 
-        if (settings.Filter) {
-            if (settings.Filter === true) {
-                const WordT = message.content.toLowerCase();
-                for (var i = 0; i < CustomFilterWords.length; i++) {
-                    if (WordT.includes(CustomFilterWords[i])) {
-                        if(!message.content.includes(`${client.prefix}removefilter`)){
+        if (settings && settings.Filter && settings.Filter === true) {
+            const WordT = message.content.toLowerCase();
+            for (var i = 0; i < CustomFilterWords.length; i++) {
+                if (WordT.includes(CustomFilterWords[i])) {
+                    if (!message.content.includes(`${client.prefix}removefilter`)) {
                         try {
                             message.delete();
                             return message.channel.send(new Discord.MessageEmbed().setDescription(`The message you have just sent seemed to contain swear words. If you do not understand the deletion of your message, please contact the owner of this server, since this deletion was due to a custom anti swear word. If you do understand it though, please make sure to not use these words.`).setTitle("Custom Deletion").setAuthor("Custom Guild Settings").setTimestamp().setFooter("Not Official Filter. ExFrame®"));
                         } catch (err) {
                             return message.channel.send(`Error: ${err}`);
                         }
-                    }else{
-                        if(!message.member.hasPermission("MANAGE_GUILD")){
+                    } else {
+                        if (!message.member.hasPermission("MANAGE_GUILD")) {
                             try {
                                 message.delete();
                                 return message.channel.send(new Discord.MessageEmbed().setDescription(`The message you have just sent seemed to contain swear words. If you do not understand the deletion of your message, please contact the owner of this server, since this deletion was due to a custom anti swear word. If you do understand it though, please make sure to not use these words.`).setTitle("Custom Deletion").setAuthor("Custom Guild Settings").setTimestamp().setFooter("Not Official Filter. ExFrame®"));
@@ -140,7 +137,8 @@ module.exports = {
                 }
             }
         }
-    }
+
+
         if (!Pguild) {
             prefix = defaultprefix
             SuggestionChannelGuild = "None"
