@@ -44,9 +44,7 @@ module.exports = {
 
         if(!User.Public === false && !User.Public === true){
             try{
-                User.updateOne({
-                    Public: false
-                })
+ 
                 return message.channel.send(new MessageEmbed().setDescription("Please retype the command. An element was missing to your profile. We've just added it!"))
             }catch(err){
                 return message.channel.send(new MessageEmbed().setDescription(`Error: ${err}`))
@@ -67,7 +65,7 @@ module.exports = {
 
         let Value = false
 
-      if(args[0].toLowerCase() === "private"){Value = false}else if(args[0].toLowerCase() === "public"){Value = true}else{return messsage.channel.send(new MessageEmbed().setDescription("Unexpected Error."))}
+      if(args[0].toLowerCase() === "private"){Value = false}else if(args[0].toLowerCase() === "public"){Value = true}else{return message.channel.send(new MessageEmbed().setDescription("Unexpected Error."))}
 
       if(Value === User.Public)return message.channel.send(new MessageEmbed().setDescription(`Your profile is already set to ${SetedV}`))
 try{
