@@ -42,15 +42,37 @@ module.exports = {
 
         if(!User.Playlists || User.Playlists.length === 0 || User.Playlists === [])return message.channel.send(new MessageEmbed().setDescription(`You do not own any playlists. To create one, please type \`${prefix}createplaylist\``));
 
-        try{
-            await User.updateOne({
-                Playlists: []
-            })
-            return message.channel.send(new MessageEmbed().setDescription("Your playlists have been reseted and deleted.").setTitle("Reset Processed").setFooter("<Standard Format> Limit: 25"))
-        }catch(err){
 
-        }
+        const b = await message.channel.send(new MessageEmbed().setDescription("You are about to delete **the totality of your playlists and their songs.** \n \n Are you sure you want to proceed ? \n \n Answer by **yes** or **no**").setTitle("WARNING").setFooter("This action is undoable."))
 
-    }
+        i = 0
+
+        let timevar = 10000
+
+
+        await b.channel.awaitMessages(m => m.author.id === message.author.id,
+            {max: 1, time: timevar, errors: ["time"],}
+            ).then(async collected =>{
+
+                timevar = collected.first().content;
+            
+            }).catch(() => {return i++})
+
+            if(i === 1)return message.channel.send(new MessageEmbed().setDescription(":x: Timeout Error"));
+            
+            if(timevar.toLowerCase() === "yes" || timevar.toLowerCase() === "yeah"){
+                try{
+                    await User.updateOne({
+                        Playlists: []
+                    })
+                    return message.channel.send(new MessageEmbed().setDescription("Your playlists have been reseted and deleted.").setTitle("Reset Processed").setFooter("<Standard Format> Limit: 25"))
+                }catch(err){
+        
+                }
+            }else{
+                return message.channel.send(new MessageEmbed().setDescription("Action canceled"))
+            }
+        
+      }
 
 }
