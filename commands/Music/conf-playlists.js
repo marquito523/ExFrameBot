@@ -55,10 +55,8 @@ module.exports = {
 
         if(User.Public === false){SetedV = "**Private**"}else if(User.Public === true){SetedV = "**Public**"}
 
-        if(User.Public === false && !args[0]){
-            return message.channel.send(new MessageEmbed().setDescription("Your profile is currently set to " + SetedV + "\n \n To edit it type the following command: \n \n `" + client.prefix + "conf-playlists public`"))
-        }else if(User.Public === true && !args[0]){
-            return message.channel.send(new MessageEmbed().setDescription("Your profile is currently set to " + SetedV + "\n \n To edit it type the following command: \n \n `" + client.prefix + "conf-playlists private`"))
+        if(!args[0]){
+            return message.channel.send(new MessageEmbed().setDescription("Your profile is currently set to " + SetedV + "\n \n To edit it type the following command: \n \n `" + client.prefix + "conf-playlists public / private`"))
         }
 
        if(!args[0].toLowerCase() === "public" || !args[0].toLowerCase() === "private")return message.channel.send(new MessageEmbed().setDescription("Missing Argument. Please specify a value \n \n **public** or **private**. \n \n **Command use:** `" + client.prefix + "conf-playlists public | private`"))
