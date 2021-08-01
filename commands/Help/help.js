@@ -108,7 +108,10 @@ module.exports = {
             .addField(`Play Playlist <BETA>`, `Plays a playlist. Usage: ${prefix}play-playlist`)
             .addField(`Display Playlists <BETA>`, `Shows your playlists. Usage: ${prefix}playlists`)
             .addField(`Remove Playlist <BETA>`, `Removes a playlist. Usage: ${prefix}deleteplaylist`)
-            .addField(`Delete Song (Playlist) <BETA>`, `Currently Disabled Command. More info at https://exframe.tk/playlists.html`)
+            .addField(`Order (Playlist Songs) <BETA>`, `Changes the playlist order. Usage: ${prefix}ordersongs`)
+            .addField(`Songs (In playlist)`, `Displays the songs (in order) in a playlist. Usage: ${prefix}songs`)
+            .addField(`Songs (In playlist)`, `Displays the songs (in order) in a playlist. Usage: ${prefix}songs`)
+            .addField(`Delete Song (Playlist) <BETA>`, `Deletes a song. Usage: ${prefix}deletesong`)
 
 
 
