@@ -111,6 +111,8 @@ module.exports = {
             .addField(`Order (Playlist Songs) <BETA>`, `Changes the playlist order. Usage: ${prefix}ordersongs`)
             .addField(`Songs (In playlist)`, `Displays the songs (in order) in a playlist. Usage: ${prefix}songs`)
             .addField(`Songs (In playlist)`, `Displays the songs (in order) in a playlist. Usage: ${prefix}songs`)
+            .addField(`Play Other Playlists`, `Play your friends' playlists! Usage: ${prefix}play-otherplaylist <@user>`)
+            .addField(`Set Playlists State`, `Allow or not people to listen to your playlists. Usage: ${prefix}conf-playlist <public | private>`)
             .addField(`Delete Song (Playlist) <BETA>`, `Deletes a song. Usage: ${prefix}deletesong`)
 
 
