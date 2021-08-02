@@ -53,7 +53,14 @@ module.exports = {
 
         let SetedV
 
-        if(User.Public === false){SetedV = "**Private**"}else if(User.Public === true){SetedV = "**Public**"}
+        if(User.Public === false)
+        {SetedV = "**Private**"
+        }else if(User.Public === true)
+        {SetedV = "**Public**"}
+
+        if(SetedV === undefined || SetedV === "undefined"){
+            SetedV = "Error Occured | Your profile State Could Not Be Loaded."
+        }
 
         if(!args[0]){
             return message.channel.send(new MessageEmbed().setDescription("Your profile is currently set to " + SetedV + "\n \n To edit it type the following command: \n \n `" + client.prefix + "conf-playlists public / private`"))
