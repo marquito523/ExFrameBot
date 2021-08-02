@@ -42,6 +42,8 @@ module.exports = {
 
 
         console.log(User.Public)
+                console.log(User.Public)
+
         if (!User.Public === false && !User.Public === true) {
             try {
 
