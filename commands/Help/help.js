@@ -382,6 +382,19 @@ module.exports = {
             const timeout = `100000`;
     
             pagination(message, pages, emojiList, timeout)
+        }else if(message.content === `${prefix}help filters`){
+
+            const Filters = client.filters
+
+            let Message = ""
+
+            for(var i = 0; i < Filters.length; i++){
+                Message = Message + "\n" + Filters[i] 
+            }
+
+            return message.channel.send(new Discord.MessageEmbed().setDescription(Message).setTitle("Filter List").setFooter("These filters can be applied to any on-going songs."));
+
+
         }
     }
 
