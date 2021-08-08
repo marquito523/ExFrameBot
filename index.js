@@ -16,7 +16,6 @@ const client = new discord.Client({ disableEveryone: false });
 const { Player } = require('discord-player');
 const { db } = require('./commands/Models/AppData');
 var FetchingToken = false
-const prompt = require('prompt-sync')();
 var ConnectedToMongoose = false
 var ConnectionBot = false
 const LaunchFile = require("./Utils/launchFunction")
