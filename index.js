@@ -18,7 +18,6 @@ const { db } = require('./commands/Models/AppData');
 var FetchingToken = false
 var ConnectedToMongoose = false
 var ConnectionBot = false
-const LaunchFile = require("./Utils/launchFunction")
 
 function LoadMongoose()
 { 
