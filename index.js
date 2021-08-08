@@ -3,6 +3,7 @@ const discord = require('discord.js');
 const Discord = require('discord.js');
 const { DB_PASSWORD, DB_NAME } = require("./config.json")
 const DeleteFile = require("./commands/Executor/DeleteMessager")
+const keepAlive = require("./server");
 const dbOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -78,6 +79,6 @@ client.on('guildMemberAdd', async member => {
 client.on('message', async message => {
     OnMessageFile.execute(client, message)
 });
-
+keepAlive()
 client.login(token);
 
