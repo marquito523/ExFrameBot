@@ -15,7 +15,6 @@ const { defaultprefix, Version } = require("./config.json")
 const client = new discord.Client({ disableEveryone: false });
 const { Player } = require('discord-player');
 const { db } = require('./commands/Models/AppData');
-const keepAlive = requrie("./server.js")
 var FetchingToken = false
 const prompt = require('prompt-sync')();
 var ConnectedToMongoose = false
@@ -110,7 +109,6 @@ function Login(token)
     client.login(token)
 }
 
-keepAlive()
 LoadMongoose()
 
 
