@@ -26,8 +26,8 @@ function LoadMongoose()
 { 
     if(ConnectedToMongoose === true)return
     ConnectedToMongoose = true
-    mongodb.connect(`mongodb+srv://MarqBot:${MARQPASS}@cluster0.njkac.mongodb.net/${MARQNAME}?retryWrites=true&w=majority`, dbOptions).then(console.log("Connexion Succes!"))
-//mongodb.connect(`mongodb+srv://marquito523:${DB_PASSWORD}@cluster0.qmekk.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`, dbOptions).then(console.log('------------------------ \n \n Connection To MongoDB Succeeded. Awaiting Token...'))
+   // mongodb.connect(`mongodb+srv://MarqBot:${MARQPASS}@cluster0.njkac.mongodb.net/${MARQNAME}?retryWrites=true&w=majority`, dbOptions).then(console.log("Connexion Succes!"))
+    mongodb.connect(`mongodb+srv://marquito523:${DB_PASSWORD}@cluster0.qmekk.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`, dbOptions).then(console.log('------------------------ \n \n Connection To MongoDB Succeeded. Awaiting Token...'))
 GetToken ()
 }
 client.player = new Player(client);
