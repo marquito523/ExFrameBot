@@ -1,41 +1,40 @@
 const fs = require('fs');
 const discord = require('discord.js');
 const Discord = require('discord.js');
-const { DB_PASSWORD, DB_NAME } = require("./config.json")
-const DeleteFile = require("./commands/Executor/DeleteMessager")
-const keepAlive = require("./server");
-const dbOptions = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: true
-}
+const quickdb = require("quick.db")
+const { DB_PASSWORD, DB_NAME } = require('./config.json')
+const mongoose = require("mongoose")
+const {MARQPASS, MARQNAME} = require('./config.json')
+const dbOptions = { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true }
+const AppDataFile = require("./commands/Models/AppData")
 const GuildMemeberAddFile = require('./commands/Configuration/guildMemberAdd')
 const OnMessageFile = require("./commands/Configuration/MessageEvent")
-const DiscordPrivateMessage = require("./commands/Executor/DiscordPrivateMessage")
-const muteModel = require('./commands/Models/mute')
 const mongodb = require("mongoose")
-const Guild = require("./commands/Models/Guild")
 const StartUpFile = require("./commands/Configuration/Startup")
-const {
-    defaultprefix,
-    Enable_Console_Write_Commmand,
-    Version,
-    WebsiteURL
-} = require("./config.json")
-const {
-    token
-} = require("./config.json")
-const client = new discord.Client(
-    { disableEveryone: false });
-const {
-    Player
-} = require('discord-player');
-const { codePointAt } = require('ffmpeg-static');
+const { defaultprefix, Version } = require("./config.json")
+const client = new discord.Client({ disableEveryone: false });
+const { Player } = require('discord-player');
+const { db } = require('./commands/Models/AppData');
+const keepAlive = requrie("./server.js")
+var FetchingToken = false
+const prompt = require('prompt-sync')();
+var ConnectedToMongoose = false
+var ConnectionBot = false
+const LaunchFile = require("./Utils/launchFunction")
+
+function LoadMongoose()
+{ 
+    if(ConnectedToMongoose === true)return
+    ConnectedToMongoose = true
+    mongodb.connect(`mongodb+srv://MarqBot:${MARQPASS}@cluster0.njkac.mongodb.net/${MARQNAME}?retryWrites=true&w=majority`, dbOptions).then(console.log("Connexion Succes!"))
+//mongodb.connect(`mongodb+srv://marquito523:${DB_PASSWORD}@cluster0.qmekk.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`, dbOptions).then(console.log('------------------------ \n \n Connection To MongoDB Succeeded. Awaiting Token...'))
+GetToken ()
+}
 client.player = new Player(client);
 client.config = require('./config.json');
 client.emotes = client.config.emojis;
 client.Version = Version
-//client.filters = client.config.filters;
+client.filters = client.config.filters;
 client.commands = new discord.Collection();
 //client.prefix = client.config.prefix
 fs.readdirSync('./commands').forEach(dirs => {
@@ -58,8 +57,7 @@ for (const file of player) {
     const event = require(`./player/${file}`);
     client.player.on(file.split(".")[0], event.bind(null, client));
 };
-
-client.on('ready', () => {
+client.on('ready', () => {  
     StartUpFile.execute(client)
 });
 client.on('guildCreate', guild => {
@@ -79,6 +77,41 @@ client.on('guildMemberAdd', async member => {
 client.on('message', async message => {
     OnMessageFile.execute(client, message)
 });
+async function GetToken()
+{
+
+    if(FetchingToken === true)return
+
+    FetchingToken = true
+
+    const localsettings = await AppDataFile.findOne({
+
+        UserID: quickdb.get("AppData")
+
+    }, (err, exf) => {
+        if (err) console.log("Error: Profile could not be loaded.")
+
+        if(!exf) console.log("Fatal Error: Token Not Reached | Restarting Procedure")
+
+        GetToken()
+    });    
+    let token = localsettings.UserLoginCred
+
+    console.log("Token Stored.")
+
+    Login(token)
+}
+function Login(token)
+{
+
+    if(ConnectionBot === true)return
+    ConnectionBot = true
+    console.log("Connecting To Bot")
+    client.login(token)
+}
+
 keepAlive()
-client.login(token);
+LoadMongoose()
+
+
 
