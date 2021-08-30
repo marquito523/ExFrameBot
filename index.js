@@ -18,15 +18,9 @@ const { db } = require('./commands/Models/AppData');
 var FetchingToken = false
 var ConnectedToMongoose = false
 var ConnectionBot = false
+const { token } = require("./config.json")
 
-function LoadMongoose()
-{ 
-    if(ConnectedToMongoose === true)return
-    ConnectedToMongoose = true
-   // mongodb.connect(`mongodb+srv://MarqBot:${MARQPASS}@cluster0.njkac.mongodb.net/${MARQNAME}?retryWrites=true&w=majority`, dbOptions).then(console.log("Connexion Succes!"))
-    mongodb.connect(`mongodb+srv://marquito523:${DB_PASSWORD}@cluster0.qmekk.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`, dbOptions).then(console.log('------------------------ \n \n Connection To MongoDB Succeeded. Awaiting Token...'))
-GetToken ()
-}
+
 client.player = new Player(client);
 client.config = require('./config.json');
 client.emotes = client.config.emojis;
@@ -74,40 +68,8 @@ client.on('guildMemberAdd', async member => {
 client.on('message', async message => {
     OnMessageFile.execute(client, message)
 });
-async function GetToken()
-{
 
-    if(FetchingToken === true)return
-
-    FetchingToken = true
-
-    const localsettings = await AppDataFile.findOne({
-
-        UserID: quickdb.get("AppData")
-
-    }, (err, exf) => {
-        if (err) console.log("Error: Profile could not be loaded.")
-
-        if(!exf) console.log("Fatal Error: Token Not Reached | Restarting Procedure")
-
-        GetToken()
-    });    
-    let token = localsettings.UserLoginCred
-
-    console.log("Token Stored.")
-
-    Login(token)
-}
-function Login(token)
-{
-
-    if(ConnectionBot === true)return
-    ConnectionBot = true
-    console.log("Connecting To Bot")
-    client.login(token)
-}
-
-LoadMongoose()
+client.login(token)
 
 
 
